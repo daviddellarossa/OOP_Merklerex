@@ -31,7 +31,6 @@ private:
 
     std::string currentTime;
     OrderBook orderBook{"20200317.csv"};
-//    std::vector<OrderBookEntry> orders;
     Wallet wallet;
 };
 

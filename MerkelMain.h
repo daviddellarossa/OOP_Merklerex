@@ -22,12 +22,17 @@ private:
     void printMenu();
     void printHelp();
     void printMarketStats();
-    void enterAsk();
-    void enterBid();
-    void printWallet();
-    void gotoNextTimeFrame();
     int getUserOption();
     void processUserOption(int userOption);
+
+
+    void printWallet();
+
+    void enterAsk();
+    void enterBid();
+    void gotoNextTimeFrame();
+
+
 
     std::string currentTime;
     OrderBook orderBook{"20200317.csv"};

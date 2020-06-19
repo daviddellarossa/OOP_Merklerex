@@ -4,6 +4,7 @@
 
 #include "Wallet.h"
 #include <iostream>
+#include <sstream>
 #include "CSVReader.h"
 
 Wallet::Wallet()
@@ -62,16 +63,17 @@ bool Wallet::containsCurrency(std::string type, double amount)
 
 }
 
-std::string Wallet::toString()
+std::string Wallet::toString() const
 {
-    std::string s;
+    std::stringstream ss;
     for (std::pair<std::string,double> pair : currencies)
     {
         std::string currency = pair.first;
         double amount = pair.second;
-        s += currency + " : " + std::to_string(amount) + "\n";
+        ss << currency << " : " << std::to_string(amount) << "\n";
+//        s += currency + " : " + std::to_string(amount) + "\n";
     }
-    return s;
+    return ss.str();
 }
 
 bool Wallet::canFulfillOrder(OrderBookEntry order)

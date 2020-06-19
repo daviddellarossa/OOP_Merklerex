@@ -6,7 +6,21 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <functional>
 #include "CSVReader.h"
+
+
+
+MerkelMain::MerkelMain() : clInterpreter(orderBook, wallet){
+
+//    auto func = [this](){ this->quitRequest_EventHandler(); };
+//    clInterpreter->quitRequest_Event = this->quitRequest_EventHandler;
+    clInterpreter.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
+//    clInterpreter->gotoNextTimeFrame_Event = [this](){ this->gotoNextTimeFrame(); };
+//    clInterpreter->enterAsk_Event = [this](){ this->enterAsk_EventHandler(); };
+//    clInterpreter->enterBid_Event = [this](){ this->enterBid_EventHandler(); };
+
+}
 
 void MerkelMain::init(){
     int input;
@@ -14,56 +28,57 @@ void MerkelMain::init(){
 
     wallet.insertCurrency("BTC", 10);
 
-    while(true){
-        printMenu();
-        input = getUserOption();
-        processUserOption(input);
+    while(keepRunning){
+        clInterpreter.processFrame(currentTime);
+//        printMenu();
+//        input = getUserOption();
+//        processUserOption(input);
     }
 }
 
-void MerkelMain::printMenu(){
-    // 1 print help
-    std::cout << "1: Print help" << std::endl;
-    // 2 print exchange stats
-    std::cout << "2: Print exchange stats" << std::endl;
-    // 3 make an offer
-    std::cout << "3: Make an ask" << std::endl;
-    // 4 make a bid
-    std::cout << "4: Make a bid" << std::endl;
-    // 5 print wallet
-    std::cout << "5: Print wallet" << std::endl;
-    // 6 continue
-    std::cout << "6: Continue" << std::endl;
+//void MerkelMain::printMenu(){
+//    // 1 print help
+//    std::cout << "1: Print help" << std::endl;
+//    // 2 print exchange stats
+//    std::cout << "2: Print exchange stats" << std::endl;
+//    // 3 make an offer
+//    std::cout << "3: Make an ask" << std::endl;
+//    // 4 make a bid
+//    std::cout << "4: Make a bid" << std::endl;
+//    // 5 print wallet
+//    std::cout << "5: Print wallet" << std::endl;
+//    // 6 continue
+//    std::cout << "6: Continue" << std::endl;
+//
+//    std::cout << "============================" << std::endl;
+//
+//    std::cout << "Current time is:" << currentTime << std::endl;
+//}
 
-    std::cout << "============================" << std::endl;
-
-    std::cout << "Current time is:" << currentTime << std::endl;
-}
-
-void MerkelMain::printHelp(){
-    std::cout << "Help - your aim is to make money. Analyse the market and make bids and offers" << std::endl;
-}
-void MerkelMain::printMarketStats(){
-    for(auto const& p : orderBook.getKnownProducts()){
-        std::cout << "Product: " << p << std::endl;
-        std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, p, currentTime);
-        std::cout << "Asks seen: " << entries.size() << std::endl;
-        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
-        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
-
-
-    }
-//    std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
-//    unsigned int bids{0};
-//    unsigned int asks{0};
-//    for(OrderBookEntry& e : orders){
-//        if(e.orderType == OrderBookType::bid)
-//            ++bids;
-//        else if(e.orderType == OrderBookType::ask)
-//            ++asks;
+//void MerkelMain::printHelp(){
+//    std::cout << "Help - your aim is to make money. Analyse the market and make bids and offers" << std::endl;
+//}
+//void MerkelMain::printMarketStats(){
+//    for(auto const& p : orderBook.getKnownProducts()){
+//        std::cout << "Product: " << p << std::endl;
+//        std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, p, currentTime);
+//        std::cout << "Asks seen: " << entries.size() << std::endl;
+//        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
+//        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
+//
+//
 //    }
-//    std::cout << "Order book asks: " << asks << "; bids: " << bids << std::endl;
-}
+////    std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
+////    unsigned int bids{0};
+////    unsigned int asks{0};
+////    for(OrderBookEntry& e : orders){
+////        if(e.orderType == OrderBookType::bid)
+////            ++bids;
+////        else if(e.orderType == OrderBookType::ask)
+////            ++asks;
+////    }
+////    std::cout << "Order book asks: " << asks << "; bids: " << bids << std::endl;
+//}
 void MerkelMain::enterAsk(){
     std::cout << "Make an ask - enter the amount: product,price,amount, eg: ETH/BTC,200,0.5" << std::endl;
     std::string input;
@@ -133,9 +148,9 @@ void MerkelMain::enterBid(){
     }
 
 }
-void MerkelMain::printWallet(){
-    std::cout << wallet.toString() << std::endl;
-}
+//void MerkelMain::printWallet(){
+//    std::cout << wallet.toString() << std::endl;
+//}
 void MerkelMain::gotoNextTimeFrame(){
     std::cout << "Going to next time frame. " << std::endl;
     for (std::string p : orderBook.getKnownProducts())
@@ -157,57 +172,73 @@ void MerkelMain::gotoNextTimeFrame(){
     currentTime = orderBook.getNextTime(currentTime);
 }
 
-int MerkelMain::getUserOption(){
-    int userOption;
-    std::cout << "Type in 1-6" << std::endl;
-    std::cin >> userOption;
-    std::cout << "You chose: " << userOption << std::endl;
-    return userOption;
-    /*
-     *     int userOption = 0;
-    std::string line;
-    std::cout << "Type in 1-6" << std::endl;
-    std::getline(std::cin, line);
-    try{
-        userOption = std::stoi(line);
-    }catch(const std::exception& e)
-    {
-        //
-    }
-    std::cout << "You chose: " << userOption << std::endl;
-    return userOption;
-     */
-
-
+void MerkelMain::enterAsk_EventHandler() {
+    enterAsk();
 }
 
-void MerkelMain::processUserOption(int userOption){
-    if (userOption == 0) // bad input
-    {
-        std::cout << "Invalid choice. Choose 1-6" << std::endl;
-    }
-    if (userOption == 1)
-    {
-        printHelp();
-    }
-    if (userOption == 2)
-    {
-        printMarketStats();
-    }
-    if (userOption == 3)
-    {
-        enterAsk();
-    }
-    if (userOption == 4)
-    {
-        enterBid();
-    }
-    if (userOption == 5)
-    {
-        printWallet();
-    }
-    if (userOption == 6)
-    {
-        gotoNextTimeFrame();
-    }
+void MerkelMain::enterBid_EventHandler() {
+    enterBid();
 }
+
+void MerkelMain::gotoNextTimeFrame_EventHandler() {
+    gotoNextTimeFrame();
+}
+
+void MerkelMain::quitRequest_EventHandler() {
+    keepRunning = false;
+}
+
+//int MerkelMain::getUserOption(){
+//    int userOption;
+//    std::cout << "Type in 1-6" << std::endl;
+//    std::cin >> userOption;
+//    std::cout << "You chose: " << userOption << std::endl;
+//    return userOption;
+//    /*
+//     *     int userOption = 0;
+//    std::string line;
+//    std::cout << "Type in 1-6" << std::endl;
+//    std::getline(std::cin, line);
+//    try{
+//        userOption = std::stoi(line);
+//    }catch(const std::exception& e)
+//    {
+//        //
+//    }
+//    std::cout << "You chose: " << userOption << std::endl;
+//    return userOption;
+//     */
+//
+//
+//}
+
+//void MerkelMain::processUserOption(int userOption){
+//    if (userOption == 0) // bad input
+//    {
+//        std::cout << "Invalid choice. Choose 1-6" << std::endl;
+//    }
+//    if (userOption == 1)
+//    {
+//        printHelp();
+//    }
+//    if (userOption == 2)
+//    {
+//        printMarketStats();
+//    }
+//    if (userOption == 3)
+//    {
+//        enterAsk();
+//    }
+//    if (userOption == 4)
+//    {
+//        enterBid();
+//    }
+//    if (userOption == 5)
+//    {
+//        printWallet();
+//    }
+//    if (userOption == 6)
+//    {
+//        gotoNextTimeFrame();
+//    }
+//}

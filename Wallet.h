@@ -30,7 +30,7 @@ public:
 
 
     /** generate a string representation of the wallet */
-    std::string toString();
+    std::string toString() const;
     friend std::ostream& operator<<(std::ostream& os, Wallet& wallet);
 
 

@@ -7041,7 +7041,7 @@
 											"top": 96,
 											"width": 100.76904296875,
 											"height": 13,
-											"text": "IProcess"
+											"text": "IActor"
 										},
 										{
 											"_type": "LabelView",
@@ -37135,7 +37135,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFyxC/uho8U7jI="
 					},
-					"name": "IProcess",
+					"name": "IActor",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",

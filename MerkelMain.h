@@ -19,6 +19,11 @@ public:
     /** Call this to start the sim */
     void init();
 
+    void enterAsk_EventHandler();
+    void enterBid_EventHandler();
+    void gotoNextTimeFrame_EventHandler();
+    void quitRequest_EventHandler();
+
 private:
 //    void printMenu();
 //    void printHelp();
@@ -27,10 +32,7 @@ private:
 //    void processUserOption(int userOption);
 //    void printWallet();
 
-    void enterAsk_EventHandler();
-    void enterBid_EventHandler();
-    void gotoNextTimeFrame_EventHandler();
-    void quitRequest_EventHandler();
+
 
     void enterAsk();
     void enterBid();

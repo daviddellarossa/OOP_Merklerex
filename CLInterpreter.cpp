@@ -22,7 +22,7 @@ void CLInterpreter::processUserOption(int userOption) const{
 
     switch(userOption){
         case 0:
-            std::cout << "Invalid choice. Choose 1-6" << std::endl;
+            std::cout << "Invalid choice. Choose 1-7" << std::endl;
             break;
         case 1:
             printHelp();
@@ -73,7 +73,8 @@ void CLInterpreter::printMenu() const {
     std::cout << "5: Print wallet" << std::endl;
     // 6 continue
     std::cout << "6: Continue" << std::endl;
-
+    // 7 quit
+    std::cout << "7: Quit" << std::endl;
     std::cout << "============================" << std::endl;
 
     std::cout << "Current time is:" << m_currentTime << std::endl;

@@ -8,6 +8,7 @@
 #include "IActor.h"
 #include "Wallet.h"
 #include "OrderBook.h"
+#include "BotRemoteControl.h"
 
 class CLInterpreter : public IActor {
 
@@ -23,13 +24,17 @@ private:
     std::string m_currentTime;
     const OrderBook& m_orderBook;
     const Wallet& m_wallet;
+    const BotRemoteControl& m_botRemoteControl;
 public:
-    CLInterpreter(const OrderBook& orderBook, const Wallet& wallet);
+    CLInterpreter(const OrderBook& orderBook, const Wallet& wallet, const BotRemoteControl& botRemoteControl);
+
+    //IActor interface
     std::function<void()> enterAsk_Event;
     std::function<void()> enterBid_Event;
     std::function<void()> gotoNextTimeFrame_Event;
     std::function<void()> quitRequest_Event;
     void processFrame(std::string currentTime) override;
+
 };
 
 

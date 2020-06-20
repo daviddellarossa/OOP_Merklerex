@@ -37,6 +37,7 @@ private:
     Wallet wallet;
     CLInterpreter clInterpreter;
     Bot bot;
+    BotRemoteControl botRemoteControl;
 };
 
 

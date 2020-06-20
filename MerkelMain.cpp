@@ -11,13 +11,17 @@
 
 
 
-MerkelMain::MerkelMain() : clInterpreter(orderBook, wallet), bot(orderBook, wallet){
+MerkelMain::MerkelMain() :
+            bot(orderBook, wallet),
+            botRemoteControl(bot.GetRemote()),
+            clInterpreter(orderBook, wallet, botRemoteControl) {
     clInterpreter.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
     clInterpreter.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
     clInterpreter.enterAsk_Event = [this]{ this->enterAsk_EventHandler(); };
     clInterpreter.enterBid_Event = [this]{ this->enterBid_EventHandler(); };
 
-    bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
+    //bot is not allowed to terminate the application
+//    bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
     bot.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
     bot.enterAsk_Event = [this]{ this->enterAsk_EventHandler(); };
     bot.enterBid_Event = [this]{ this->enterBid_EventHandler(); };
@@ -27,8 +31,9 @@ void MerkelMain::init(){
     currentTime = orderBook.getEarliestTime();
 
     wallet.insertCurrency("BTC", 10);
-
+    auto a = botRemoteControl.isEnabled();
     while(keepRunning){
+        bot.processFrame(currentTime);
         clInterpreter.processFrame(currentTime);
     }
 }

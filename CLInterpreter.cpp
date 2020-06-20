@@ -6,7 +6,13 @@
 
 #include "CLInterpreter.h"
 
-CLInterpreter::CLInterpreter(const OrderBook &orderBook, const Wallet &wallet) : m_orderBook{orderBook}, m_wallet{wallet} {
+CLInterpreter::CLInterpreter(
+        const OrderBook &orderBook,
+        const Wallet &wallet,
+        const BotRemoteControl& botRemoteControl) :
+        m_orderBook{orderBook},
+        m_wallet{wallet},
+        m_botRemoteControl{botRemoteControl}{
 
 }
 
@@ -46,6 +52,18 @@ void CLInterpreter::processUserOption(int userOption) const{
                 gotoNextTimeFrame_Event();
             break;
         case 7:
+            if(m_botRemoteControl.isEnabled)
+                std::cout << "Bot status:" <<  (m_botRemoteControl.isEnabled() ? "enabled" :"disabled") << std::endl;
+            break;
+        case 8:
+            if(m_botRemoteControl.enable)
+                m_botRemoteControl.enable();
+            break;
+        case 9:
+            if(m_botRemoteControl.disable)
+                m_botRemoteControl.disable();
+            break;
+        case 10:
             if(quitRequest_Event)
                 quitRequest_Event();
             break;
@@ -73,8 +91,14 @@ void CLInterpreter::printMenu() const {
     std::cout << "5: Print wallet" << std::endl;
     // 6 continue
     std::cout << "6: Continue" << std::endl;
+    // 7 get bot status
+    std::cout << "7: Get Bot status" << std::endl;
+    // 8 enable bot
+    std::cout << "8: Enable Bot" << std:: endl;
+    // 9 disable bot
+    std::cout << "9: Disable Bot" << std::endl;
     // 7 quit
-    std::cout << "7: Quit" << std::endl;
+    std::cout << "10: Quit" << std::endl;
     std::cout << "============================" << std::endl;
 
     std::cout << "Current time is:" << m_currentTime << std::endl;

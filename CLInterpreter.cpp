@@ -28,7 +28,7 @@ void CLInterpreter::processUserOption(int userOption) const{
 
     switch(userOption){
         case 0:
-            std::cout << "Invalid choice. Choose 1-7" << std::endl;
+            std::cout << "Invalid choice. Choose 1-10" << std::endl;
             break;
         case 1:
             printHelp();
@@ -97,7 +97,7 @@ void CLInterpreter::printMenu() const {
     std::cout << "8: Enable Bot" << std:: endl;
     // 9 disable bot
     std::cout << "9: Disable Bot" << std::endl;
-    // 7 quit
+    // 10 quit
     std::cout << "10: Quit" << std::endl;
     std::cout << "============================" << std::endl;
 
@@ -131,26 +131,19 @@ void CLInterpreter::printMarketStats() const {
 }
 
 int CLInterpreter::getUserOption() {
-    int userOption;
-    std::cout << "Type in 1-6" << std::endl;
-    std::cin >> userOption;
-    std::cout << "You chose: " << userOption << std::endl;
-    return userOption;
-    /*
-     *     int userOption = 0;
+    int userOption = 0;
     std::string line;
-    std::cout << "Type in 1-6" << std::endl;
+    std::cout << "Type in 1-10" << std::endl;
     std::getline(std::cin, line);
+    std::cout << "You chose: " << line << std::endl;
     try{
         userOption = std::stoi(line);
     }catch(const std::exception& e)
     {
         //
     }
-    std::cout << "You chose: " << userOption << std::endl;
+//    std::cout << "You chose: " << userOption << std::endl;
     return userOption;
-     */
-
 
 }
 

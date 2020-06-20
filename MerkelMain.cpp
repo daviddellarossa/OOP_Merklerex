@@ -11,12 +11,16 @@
 
 
 
-MerkelMain::MerkelMain() : clInterpreter(orderBook, wallet){
+MerkelMain::MerkelMain() : clInterpreter(orderBook, wallet), bot(orderBook, wallet){
     clInterpreter.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
     clInterpreter.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
     clInterpreter.enterAsk_Event = [this]{ this->enterAsk_EventHandler(); };
     clInterpreter.enterBid_Event = [this]{ this->enterBid_EventHandler(); };
 
+    bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
+    bot.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
+    bot.enterAsk_Event = [this]{ this->enterAsk_EventHandler(); };
+    bot.enterBid_Event = [this]{ this->enterBid_EventHandler(); };
 }
 
 void MerkelMain::init(){
@@ -28,7 +32,6 @@ void MerkelMain::init(){
         clInterpreter.processFrame(currentTime);
     }
 }
-
 
 void MerkelMain::enterAsk(){
     std::cout << "Make an ask - enter the amount: product,price,amount, eg: ETH/BTC,200,0.5" << std::endl;
@@ -63,6 +66,7 @@ void MerkelMain::enterAsk(){
     }
     std::cout << "You typed:" << input << std::endl;
 }
+
 void MerkelMain::enterBid(){
     std::cout << "Make an bid - enter the amount: product,price, amount, eg  ETH/BTC,200,0.5" << std::endl;
     std::string input;

@@ -12,6 +12,7 @@
 #include "Wallet.h"
 #include "IActor.h"
 #include "CLInterpreter.h"
+#include "Bot.h"
 
 class MerkelMain {
 public:
@@ -25,25 +26,17 @@ public:
     void quitRequest_EventHandler();
 
 private:
-//    void printMenu();
-//    void printHelp();
-//    void printMarketStats();
-//    int getUserOption();
-//    void processUserOption(int userOption);
-//    void printWallet();
-
-
 
     void enterAsk();
     void enterBid();
     void gotoNextTimeFrame();
-
 
     bool keepRunning = true;
     std::string currentTime;
     OrderBook orderBook{"20200317.csv"};
     Wallet wallet;
     CLInterpreter clInterpreter;
+    Bot bot;
 };
 
 

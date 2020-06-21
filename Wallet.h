@@ -15,18 +15,18 @@ class Wallet
 public:
     Wallet();
     /** insert currency to the wallet */
-    void insertCurrency(std::string type, double amount);
+    void insertCurrency(const std::string& type, double amount);
     /** remove currency from the wallet */
-    bool removeCurrency(std::string type, double amount);
+    bool removeCurrency(const std::string& type, double amount);
 
     /** check if the wallet contains this much currency or more */
-    bool containsCurrency(std::string type, double amount);
+    bool containsCurrency(const std::string& type, double amount) const;
     /** checks if the wallet can cope with this ask or bid.*/
-    bool canFulfillOrder(OrderBookEntry order);
+    bool canFulfillOrder(const OrderBookEntry& order) const;
     /** update the contents of the wallet
      * assumes the order was made by the owner of the wallet
     */
-    void processSale(OrderBookEntry& sale);
+    void processSale(const OrderBookEntry& sale);
 
 
     /** generate a string representation of the wallet */

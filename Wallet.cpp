@@ -9,7 +9,7 @@
 
 Wallet::Wallet(){ }
 
-void Wallet::insertCurrency(std::string type, double amount)
+void Wallet::insertCurrency(const std::string& type, double amount)
 {
     double balance;
     if (amount < 0)
@@ -27,7 +27,7 @@ void Wallet::insertCurrency(std::string type, double amount)
     currencies[type] = balance;
 }
 
-bool Wallet::removeCurrency(std::string type, double amount)
+bool Wallet::removeCurrency(const std::string& type, double amount)
 {
     if (amount < 0)
     {
@@ -50,12 +50,12 @@ bool Wallet::removeCurrency(std::string type, double amount)
     }
 }
 
-bool Wallet::containsCurrency(std::string type, double amount)
+bool Wallet::containsCurrency(const std::string& type, double amount) const
 {
     if (currencies.count(type) == 0) // not there yet
         return false;
     else
-        return currencies[type] >= amount;
+        return currencies.at(type) >= amount;
 
 }
 
@@ -72,7 +72,7 @@ std::string Wallet::toString() const
     return ss.str();
 }
 
-bool Wallet::canFulfillOrder(OrderBookEntry order)
+bool Wallet::canFulfillOrder(const OrderBookEntry& order) const
 {
     std::vector<std::string> currs = CSVReader::tokenize(order.product, '/');
     // ask
@@ -98,7 +98,7 @@ bool Wallet::canFulfillOrder(OrderBookEntry order)
 }
 
 
-void Wallet::processSale(OrderBookEntry& sale)
+void Wallet::processSale(const OrderBookEntry& sale)
 {
     std::vector<std::string> currs = CSVReader::tokenize(sale.product, '/');
     // ask

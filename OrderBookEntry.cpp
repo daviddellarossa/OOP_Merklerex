@@ -21,8 +21,31 @@ OrderBookEntry::OrderBookEntry(
             username(_username) {
 
 }
-OrderBookType OrderBookEntry::stringToOrderBookType(const std::string std){
+OrderBookType OrderBookEntry::stringToOrderBookType(const std::string& std){
     if(std == "bid") return OrderBookType::bid;
     else if(std == "ask") return OrderBookType::ask;
     else return OrderBookType::unknown;
+}
+
+std::string OrderBookEntry::toString() const {
+    std::stringstream ss;
+    switch(orderType){
+        case OrderBookType::ask:
+            ss << "Ask: ";
+            break;
+        case OrderBookType::bid:
+            ss << "Bid: ";
+            break;
+        case OrderBookType::asksale:
+            ss << "Asksale: ";
+            break;
+        case OrderBookType::bidsale:
+            ss << "Bidsale: ";
+            break;
+        default:
+            ss << "Unknown: ";
+            break;
+    }
+    ss << product << "," << price << "," << amount;
+    return ss.str();
 }

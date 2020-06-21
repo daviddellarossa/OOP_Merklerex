@@ -38,15 +38,16 @@ void Bot::processFrame(const std::string& currentTime) {
         double bidAmount = std::min(maxBidAmount, walletAmount);
 
         if(bidAmount > 0){
-            enterBid(
-                    OrderBookEntry{
-                            sma,
-                            bidAmount,
-                            m_currentTime,
-                            product.first,
-                            OrderBookType::ask
-                    }
-            );
+            auto obe = OrderBookEntry{
+                    sma,
+                    bidAmount,
+                    m_currentTime,
+                    product.first,
+                    OrderBookType::ask,
+                    "bot"
+            };
+            m_logger << obe.toString();
+            enterBid_Event(obe);
         }
 
         //get all bids for this product in the current timeframe from the orderbook
@@ -60,14 +61,16 @@ void Bot::processFrame(const std::string& currentTime) {
 
         //if there are possible bids and I have some currency in my wallet
         if(maxAskAmount > 0 && walletAmount > 0){
-            enterAsk(
-                    OrderBookEntry{
-                        sma,
-                        walletAmount,
-                        m_currentTime,
-                        product.first,
-                        OrderBookType::ask
-                    });
+            auto obe = OrderBookEntry{
+                    sma,
+                    walletAmount,
+                    m_currentTime,
+                    product.first,
+                    OrderBookType::ask,
+                    "bot"
+            };
+            m_logger << obe.toString();
+            enterAsk_Event(obe);
         }
 
         //Calculate the new average for the current period and add it to the historical for the product
@@ -106,10 +109,12 @@ const BotRemoteControl Bot::GetRemote() {
     return remote;
 }
 
-void Bot::enterAsk(const OrderBookEntry& obe) {
-    m_orderBook.insertOrder(obe);
-}
-
-void Bot::enterBid(const OrderBookEntry& obe) {
-    m_orderBook.insertOrder(obe);
-}
+//void Bot::enterAsk(const OrderBookEntry& obe) {
+//    m_orderBook.insertOrder(obe);
+//    m_logger << obe.toString();
+//}
+//
+//void Bot::enterBid(const OrderBookEntry& obe) {
+//    m_orderBook.insertOrder(obe);
+//    m_logger << obe.toString();
+//}

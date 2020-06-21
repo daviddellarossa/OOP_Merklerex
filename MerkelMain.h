@@ -21,15 +21,15 @@ public:
     /** Call this to start the sim */
     void init();
 
-    void enterAsk_EventHandler();
-    void enterBid_EventHandler();
+    void enterAsk_EventHandler(const OrderBookEntry&);
+    void enterBid_EventHandler(const OrderBookEntry&);
     void gotoNextTimeFrame_EventHandler();
     void quitRequest_EventHandler();
 
 private:
 
-//    void enterAsk();
-//    void enterBid();
+    void enterAsk(const OrderBookEntry& obe);
+    void enterBid(const OrderBookEntry& obe);
     void gotoNextTimeFrame();
 
     bool keepRunning{true};

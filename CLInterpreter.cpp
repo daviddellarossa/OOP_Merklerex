@@ -168,14 +168,15 @@ void CLInterpreter::enterAsk(){
                     OrderBookType::ask
             );
             obe.username = "simuser";
-            if (m_wallet.canFulfillOrder(obe))
-            {
-                std::cout << "Wallet looks good. " << std::endl;
-                m_orderBook.insertOrder(obe);
-            }
-            else {
-                std::cout << "Wallet has insufficient funds . " << std::endl;
-            }
+            enterAsk_Event(obe);
+//            if (m_wallet.canFulfillOrder(obe))
+//            {
+//                std::cout << "Wallet looks good. " << std::endl;
+//                m_orderBook.insertOrder(obe);
+//            }
+//            else {
+//                std::cout << "Wallet has insufficient funds . " << std::endl;
+//            }
         }catch(const std::exception& ex){
             std::cout << "MerkelMain::enterAsk - Bad input" << std::endl;
         }
@@ -203,15 +204,15 @@ void CLInterpreter::enterBid(){
                     OrderBookType::bid
             );
             obe.username = "simuser";
-
-            if (m_wallet.canFulfillOrder(obe))
-            {
-                std::cout << "Wallet looks good. " << std::endl;
-                m_orderBook.insertOrder(obe);
-            }
-            else {
-                std::cout << "Wallet has insufficient funds . " << std::endl;
-            }
+            enterBid_Event(obe);
+//            if (m_wallet.canFulfillOrder(obe))
+//            {
+//                std::cout << "Wallet looks good. " << std::endl;
+//                m_orderBook.insertOrder(obe);
+//            }
+//            else {
+//                std::cout << "Wallet has insufficient funds . " << std::endl;
+//            }
         }catch (const std::exception& e)
         {
             std::cout << " MerkelMain::enterBid Bad input " << std::endl;

@@ -21,13 +21,13 @@
 class Bot : public IActor, public IBotControl {
 
 private:
-    void enterAsk(const OrderBookEntry& obe);
-    void enterBid(const OrderBookEntry& obe);
+//    void enterAsk(const OrderBookEntry& obe);
+//    void enterBid(const OrderBookEntry& obe);
 
     constexpr static unsigned int AVGARRSIZE = 4;
     std::string m_currentTime;
-    OrderBook& m_orderBook;
-    Wallet& m_wallet;
+    const OrderBook& m_orderBook;
+    const Wallet& m_wallet;
     mutable std::ofstream m_logger;
     bool m_isEnabled = false;
 

@@ -12,6 +12,7 @@
 
 
 MerkelMain::MerkelMain() :
+            orderBook("20200317.csv"),
             bot(orderBook, wallet),
             botRemoteControl(bot.GetRemote()),
             clInterpreter(orderBook, wallet, botRemoteControl) {
@@ -41,7 +42,7 @@ void MerkelMain::init(){
 void MerkelMain::enterAsk(){
     std::cout << "Make an ask - enter the amount: product,price,amount, eg: ETH/BTC,200,0.5" << std::endl;
     std::string input;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, input);
 
     std::vector<std::string> tokens = CSVReader::tokenize(input, ',');

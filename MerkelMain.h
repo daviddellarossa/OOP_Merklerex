@@ -31,9 +31,9 @@ private:
     void enterBid();
     void gotoNextTimeFrame();
 
-    bool keepRunning = true;
+    bool keepRunning{true};
     std::string currentTime;
-    OrderBook orderBook{"20200317.csv"};
+    OrderBook orderBook; //initialization moved into the constructor
     Wallet wallet;
     CLInterpreter clInterpreter;
     Bot bot;

@@ -13,26 +13,26 @@
 class OrderBook{
 public:
     /** construct, reading a csv datafile */
-    OrderBook(std::string filename);
+    explicit OrderBook(const std::string& filename); //Constructor set explicit
     /** return vector of all known products in the dataset */
     std::vector<std::string> getKnownProducts() const;
     /** return vector of Orders according to the sent filters */
     std::vector<OrderBookEntry> getOrders (
             OrderBookType type,
-            std::string product,
-            std::string timestamp) const;
+            const std::string& product,
+            const std::string& timestamp) const;
     /** returns the earliest time in the orderbook */
-    std::string getEarliestTime();
+    std::string getEarliestTime() const;
     /** returns the next time after the sent time in the orderbook.
-     * If there is no timestamp, waraps around to the start.*/
-    std::string getNextTime(std::string timestamp);
+     * If there is no timestamp, wraps around to the start.*/
+    std::string getNextTime(const std::string& timestamp) const;
 
     void insertOrder(OrderBookEntry& order);
 
-    std::vector<OrderBookEntry> matchAsksToBids(std::string product, std::string timestamp);
+    std::vector<OrderBookEntry> matchAsksToBids(const std::string& product, const std::string& timestamp) const;
 
-    static double getHighPrice(std::vector<OrderBookEntry>& order);
-    static double getLowPrice(std::vector<OrderBookEntry>& order);
+    static double getHighPrice(const std::vector<OrderBookEntry>& order);
+    static double getLowPrice(const std::vector<OrderBookEntry>& order);
 
 private:
     std::vector<OrderBookEntry> orders;

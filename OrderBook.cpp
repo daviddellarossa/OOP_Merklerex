@@ -4,30 +4,32 @@
 
 #include "OrderBook.h"
 #include "CSVReader.h"
-#include <map>
+#include <set>
 #include <algorithm>
 #include <iostream>
 
-OrderBook::OrderBook(std::string filename) {
-    orders = CSVReader::readCSV(filename);
+//input parameter set to const
+//initialization of orders moved to initialization list
+OrderBook::OrderBook(const std::string& filename) : orders(CSVReader::readCSV(filename)) {
+//    orders = CSVReader::readCSV(filename);
 }
 
+/** Return unique products out of orders collection */
+//function set to const
 std::vector<std::string> OrderBook::getKnownProducts() const{
-    std::vector<std::string> products;
-
-    std::map<std::string, bool> prodMap;
-
+    /** map replaced with a set */
+    std::set<std::string> prodSet;
     for(const OrderBookEntry& e : orders){
-        prodMap[e.product] = true;
+        prodSet.insert(e.product);
     }
-    for(auto const& e : prodMap){
-        products.push_back(e.first);
-    }
+    std::vector<std::string> products(prodSet.begin(), prodSet.end());
 
     return products;
 }
 
-std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type, std::string product, std::string timestamp) const{
+//function set to const
+//input parameters set to const
+std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type, const std::string& product, const std::string& timestamp) const{
     std::vector<OrderBookEntry> orders_sub;
     for(const OrderBookEntry& e : orders){
         if(e.orderType == type &&
@@ -38,8 +40,8 @@ std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type, std::string
     }
     return orders_sub;
 }
-
-double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders) {
+//input parameter set to const
+double OrderBook::getHighPrice(const std::vector<OrderBookEntry> &orders) {
     double max = orders[0].price;
     for(auto& e: orders){
         if(e.price > max) max = e.price;
@@ -48,7 +50,8 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders) {
     return max;
 }
 
-double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders) {
+//input parameter set to const
+double OrderBook::getLowPrice(const std::vector<OrderBookEntry> &orders) {
     double min = orders[0].price;
     for(auto& e: orders){
         if(e.price < min) min = e.price;
@@ -56,11 +59,13 @@ double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders) {
     return min;
 }
 
-std::string OrderBook::getEarliestTime() {
+//input parameter set to const
+std::string OrderBook::getEarliestTime() const {
     return orders[0].timestamp;
 }
 
-std::string OrderBook::getNextTime(std::string timestamp) {
+//function made const; input parameters made const&
+std::string OrderBook::getNextTime(const std::string& timestamp) const {
     std::string next_timestamp = "";
     for(auto& e : orders){
         if(e.timestamp > timestamp){
@@ -80,7 +85,8 @@ void OrderBook::insertOrder(OrderBookEntry& order)
     std::sort(orders.begin(), orders.end(), OrderBookEntry::compareByTimestamp);
 }
 
-std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
+//function made const; input parameters made const&
+std::vector<OrderBookEntry> OrderBook::matchAsksToBids(const std::string& product, const std::string& timestamp) const
 {
 // asks = orderbook.asks
     std::vector<OrderBookEntry> asks = getOrders(OrderBookType::ask,

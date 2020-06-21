@@ -7,11 +7,7 @@
 #include <sstream>
 #include "CSVReader.h"
 
-Wallet::Wallet()
-{
-
-
-}
+Wallet::Wallet(){ }
 
 void Wallet::insertCurrency(std::string type, double amount)
 {

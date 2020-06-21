@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <memory>
+#include <fstream>
 #include "OrderBookEntry.h"
 #include "OrderBook.h"
 #include "Wallet.h"
@@ -27,8 +28,8 @@ public:
 
 private:
 
-    void enterAsk();
-    void enterBid();
+//    void enterAsk();
+//    void enterBid();
     void gotoNextTimeFrame();
 
     bool keepRunning{true};

@@ -28,6 +28,7 @@ public:
     */
     void processSale(const OrderBookEntry& sale);
 
+    double currencyAmount(const std::string& type) const;
 
     /** generate a string representation of the wallet */
     std::string toString() const;

@@ -27,7 +27,7 @@ public:
      * If there is no timestamp, wraps around to the start.*/
     std::string getNextTime(const std::string& timestamp) const;
 
-    void insertOrder(OrderBookEntry& order);
+    void insertOrder(const OrderBookEntry& order);
 
     std::vector<OrderBookEntry> matchAsksToBids(const std::string& product, const std::string& timestamp) const;
 

@@ -15,25 +15,28 @@ class CLInterpreter : public IActor {
 
 private:
     int getUserOption();
-    void processUserOption(int userOption) const;
+    void processUserOption(int userOption);
     void printHelp() const;
     void printMenu() const;
     void printWallet() const;
     void printMarketStats() const;
 
+    void enterAsk();
+    void enterBid();
+
     std::string m_currentTime;
-    const OrderBook& m_orderBook;
-    const Wallet& m_wallet;
+    OrderBook& m_orderBook;
+    Wallet& m_wallet;
     const BotRemoteControl& m_botRemoteControl;
 public:
-    CLInterpreter(const OrderBook& orderBook, const Wallet& wallet, const BotRemoteControl& botRemoteControl);
+    CLInterpreter(OrderBook& orderBook, Wallet& wallet, const BotRemoteControl& botRemoteControl);
 
     //IActor interface
-    std::function<void()> enterAsk_Event;
-    std::function<void()> enterBid_Event;
-    std::function<void()> gotoNextTimeFrame_Event;
-    std::function<void()> quitRequest_Event;
-    void processFrame(std::string currentTime) override;
+//    std::function<void()> enterAsk_Event;
+//    std::function<void()> enterBid_Event;
+//    std::function<void()> gotoNextTimeFrame_Event;
+//    std::function<void()> quitRequest_Event;
+    void processFrame(const std::string& currentTime) override;
 
 };
 

@@ -10,24 +10,44 @@
 #include "Wallet.h"
 #include "OrderBook.h"
 #include "BotRemoteControl.h"
+#include <fstream>
+#include <map>
+#include <string>
+#include <array>
+#include "SimpleMovingAverage.h"
+
+
 
 class Bot : public IActor, public IBotControl {
+
+private:
+    void enterAsk(const OrderBookEntry& obe);
+    void enterBid(const OrderBookEntry& obe);
+
+    constexpr static unsigned int AVGARRSIZE = 4;
     std::string m_currentTime;
-    const OrderBook& m_orderBook;
-    const Wallet& m_wallet;
-
-
+    OrderBook& m_orderBook;
+    Wallet& m_wallet;
+    mutable std::ofstream m_logger;
     bool m_isEnabled = false;
+
+    /**
+     * Contains the last AVGARRSIZE average prices for the product.
+     * the array contains the average and is accessed with a rollover policy
+     * the pair.first integer is the index in the array of the latest average
+     */
+    std::map<std::string, SimpleMovingAverage> m_avgPrices;
+
 public:
-    Bot(const OrderBook& orderBook, const Wallet& wallet);
+    Bot(OrderBook& orderBook, Wallet& wallet);
 
     //Interface IActor
-    std::function<void()> enterAsk_Event;
-    std::function<void()> enterBid_Event;
-    std::function<void()> gotoNextTimeFrame_Event;
-    std::function<void()> quitRequest_Event;
+//    std::function<void()> enterAsk_Event;
+//    std::function<void()> enterBid_Event;
+//    std::function<void()> gotoNextTimeFrame_Event;
+//    std::function<void()> quitRequest_Event;
 
-    void processFrame(std::string currentTime) override;
+    void processFrame(const std::string& currentTime) override;
 
     //Interface IBotControl
     bool isEnabled() const override { return m_isEnabled; }

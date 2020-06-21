@@ -10,7 +10,9 @@
 
 class IActor{
 public:
-    virtual void processFrame(std::string currentTime) = 0;
+//    virtual void enterAsk() = 0;
+//    virtual void enterBid() = 0;
+    virtual void processFrame(const std::string& currentTime) = 0;
     std::function<void(void)> enterAsk_Event;
     std::function<void(void)> enterBid_Event;
     std::function<void(void)> gotoNextTimeFrame_Event;

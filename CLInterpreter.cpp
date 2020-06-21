@@ -7,8 +7,8 @@
 #include "CLInterpreter.h"
 
 CLInterpreter::CLInterpreter(
-        const OrderBook &orderBook,
-        const Wallet &wallet,
+        OrderBook &orderBook,
+        Wallet &wallet,
         const BotRemoteControl& botRemoteControl) :
         m_orderBook{orderBook},
         m_wallet{wallet},
@@ -17,14 +17,14 @@ CLInterpreter::CLInterpreter(
 }
 
 
-void CLInterpreter::processFrame(std::string currentTime) {
+void CLInterpreter::processFrame(const std::string& currentTime) {
     m_currentTime = currentTime;
     printMenu();
     auto input = getUserOption();
     processUserOption(input);
 }
 
-void CLInterpreter::processUserOption(int userOption) const{
+void CLInterpreter::processUserOption(int userOption){
 
     switch(userOption){
         case 0:
@@ -37,12 +37,14 @@ void CLInterpreter::processUserOption(int userOption) const{
             printMarketStats();
             break;
         case 3:
-            if(enterAsk_Event)
-                enterAsk_Event();
+            enterAsk();
+//            if(enterAsk_Event)
+//                enterAsk_Event();
             break;
         case 4:
-            if(enterBid_Event)
-                enterBid_Event();
+            enterBid();
+//            if(enterBid_Event)
+//                enterBid_Event();
             break;
         case 5:
             printWallet();
@@ -148,3 +150,72 @@ int CLInterpreter::getUserOption() {
 }
 
 
+void CLInterpreter::enterAsk(){
+    std::cout << "Make an ask - enter the amount: product,price,amount, eg: ETH/BTC,200,0.5" << std::endl;
+    std::string input;
+    std::getline(std::cin, input);
+
+    std::vector<std::string> tokens = CSVReader::tokenize(input, ',');
+    if(tokens.size() != 3){
+        std::cout << "MerkelMain::enterAsk Bad input! " << input << std::endl;
+    }else{
+        try{
+            OrderBookEntry obe = CSVReader::stringsToOBE(
+                    tokens[1],
+                    tokens[2],
+                    m_currentTime,
+                    tokens[0],
+                    OrderBookType::ask
+            );
+            obe.username = "simuser";
+            if (m_wallet.canFulfillOrder(obe))
+            {
+                std::cout << "Wallet looks good. " << std::endl;
+                m_orderBook.insertOrder(obe);
+            }
+            else {
+                std::cout << "Wallet has insufficient funds . " << std::endl;
+            }
+        }catch(const std::exception& ex){
+            std::cout << "MerkelMain::enterAsk - Bad input" << std::endl;
+        }
+    }
+    std::cout << "You typed:" << input << std::endl;
+}
+
+void CLInterpreter::enterBid(){
+    std::cout << "Make an bid - enter the amount: product,price, amount, eg  ETH/BTC,200,0.5" << std::endl;
+    std::string input;
+    std::getline(std::cin, input);
+
+    std::vector<std::string> tokens = CSVReader::tokenize(input, ',');
+    if (tokens.size() != 3)
+    {
+        std::cout << "MerkelMain::enterBid Bad input! " << input << std::endl;
+    }
+    else {
+        try {
+            OrderBookEntry obe = CSVReader::stringsToOBE(
+                    tokens[1],
+                    tokens[2],
+                    m_currentTime,
+                    tokens[0],
+                    OrderBookType::bid
+            );
+            obe.username = "simuser";
+
+            if (m_wallet.canFulfillOrder(obe))
+            {
+                std::cout << "Wallet looks good. " << std::endl;
+                m_orderBook.insertOrder(obe);
+            }
+            else {
+                std::cout << "Wallet has insufficient funds . " << std::endl;
+            }
+        }catch (const std::exception& e)
+        {
+            std::cout << " MerkelMain::enterBid Bad input " << std::endl;
+        }
+    }
+
+}

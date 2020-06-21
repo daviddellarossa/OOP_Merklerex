@@ -19,8 +19,10 @@ OrderBook::OrderBook(const std::string& filename) : orders(CSVReader::readCSV(fi
 std::vector<std::string> OrderBook::getKnownProducts() const{
     /** map replaced with a set */
     std::set<std::string> prodSet;
+//    std::set<std::string> distinctTimestamp;
     for(const OrderBookEntry& e : orders){
         prodSet.insert(e.product);
+//        distinctTimestamp.insert(e.timestamp);
     }
     std::vector<std::string> products(prodSet.begin(), prodSet.end());
 
@@ -79,7 +81,7 @@ std::string OrderBook::getNextTime(const std::string& timestamp) const {
     return next_timestamp;
 }
 
-void OrderBook::insertOrder(OrderBookEntry& order)
+void OrderBook::insertOrder(const OrderBookEntry& order)
 {
     orders.push_back(order);
     std::sort(orders.begin(), orders.end(), OrderBookEntry::compareByTimestamp);

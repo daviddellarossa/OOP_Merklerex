@@ -131,3 +131,7 @@ std::ostream& operator<<(std::ostream& os,  Wallet& wallet)
     return os;
 }
 
+double Wallet::currencyAmount(const std::string &type) const {
+    return currencies.at(type);
+}
+

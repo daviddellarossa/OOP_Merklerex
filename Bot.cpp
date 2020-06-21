@@ -3,30 +3,95 @@
 //
 
 #include "Bot.h"
+#include <numeric>
 
-Bot::Bot(const OrderBook &orderBook, const Wallet &wallet) : m_orderBook{orderBook}, m_wallet{wallet} {
+Bot::Bot(OrderBook &orderBook, Wallet &wallet) : m_orderBook{orderBook}, m_wallet{wallet}, m_logger{"Merklerex_Bot.log", std::ios_base::trunc} {
+    m_logger << "Bot instance created" << std::endl;
 
+    auto products = m_orderBook.getKnownProducts();
+    for(auto product : products){
+        m_avgPrices[product];
+    }
 }
 
-void Bot::processFrame(std::string currentTime) {
+void Bot::processFrame(const std::string& currentTime) {
     if(m_isEnabled == false) return;
     m_currentTime = currentTime;
+    //analyze the orderBook for the current time frame, product by product
+    for(auto product : m_avgPrices){
+
+        //get currencies for the current prduct
+        std::vector<std::string> currencies = CSVReader::tokenize(product.first, '/');
+
+        //historical average price for the product
+        auto sma = product.second.average();
+
+        //get all asks for this product in the current timeframe from the orderbook
+        auto asks = m_orderBook.getOrders(OrderBookType::ask, product.first, m_currentTime);
+
+        //I'm going to buy all asks falling below the sma
+        //max amount I would buy
+        auto maxBidAmount = std::accumulate(asks.begin(), asks.end(), 0.0, [&sma](double sum, const auto& x){ return x.price < sma ? sum + x.amount : sum ; });
+        //max amount of Curr1 I can buy with the amount of Curr2 in my wallet, at the unitary price sma
+        double walletAmount = m_wallet.currencyAmount(currencies.at(1)) / sma;
+        //max amount I can actually buy
+        double bidAmount = std::min(maxBidAmount, walletAmount);
+
+        if(bidAmount > 0){
+            enterBid(
+                    OrderBookEntry{
+                            sma,
+                            bidAmount,
+                            m_currentTime,
+                            product.first,
+                            OrderBookType::ask
+                    }
+            );
+        }
+
+        //get all bids for this product in the current timeframe from the orderbook
+        auto bids = m_orderBook.getOrders(OrderBookType::bid, product.first, m_currentTime);
+
+        //I'm going to try to sell to all bids above the sma
+        //Max amount requested from the orderbook
+        auto maxAskAmount = std::accumulate(bids.begin(), bids.end(), 0.0, [&sma](double sum, const auto& x){ return x.price > sma ? sum + x.amount : sum ; });
+        //amount actually in my wallet I can sell
+        walletAmount = m_wallet.currencyAmount(currencies.at(0));
+
+        //if there are possible bids and I have some currency in my wallet
+        if(maxAskAmount > 0 && walletAmount > 0){
+            enterAsk(
+                    OrderBookEntry{
+                        sma,
+                        walletAmount,
+                        m_currentTime,
+                        product.first,
+                        OrderBookType::ask
+                    });
+        }
+
+        //Calculate the new average for the current period and add it to the historical for the product
+        double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
+        double sumOfBidPrice = std::accumulate(bids.begin(), bids.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
+        product.second.insert((sumOfAskPrice + sumOfBidPrice) / (asks.size() + bids.size()));
+    }
+
 }
 
 void Bot::logWallet() const {
-    std::cout << m_wallet.toString() << std::endl;
+    m_logger << m_wallet.toString() << std::endl;
 }
 
 void Bot::logBids() const {
-    std::cout << "logBids not implemented" << std::endl;
+    m_logger << "logBids not implemented" << std::endl;
 }
 
 void Bot::logAsks() const {
-    std::cout << "logAsks not implemented" << std::endl;
+    m_logger << "logAsks not implemented" << std::endl;
 }
 
 void Bot::logSales() const {
-    std::cout << "logSales not implemented" << std::endl;
+    m_logger << "logSales not implemented" << std::endl;
 }
 
 const BotRemoteControl Bot::GetRemote() {
@@ -39,4 +104,12 @@ const BotRemoteControl Bot::GetRemote() {
     remote.logSales = [this]{ return this->logSales(); };
     remote.logWallet = [this]{return this->logWallet(); };
     return remote;
+}
+
+void Bot::enterAsk(const OrderBookEntry& obe) {
+    m_orderBook.insertOrder(obe);
+}
+
+void Bot::enterBid(const OrderBookEntry& obe) {
+    m_orderBook.insertOrder(obe);
 }

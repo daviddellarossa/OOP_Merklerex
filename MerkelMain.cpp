@@ -124,6 +124,13 @@ void MerkelMain::gotoNextTimeFrame(){
             {
                 // update the wallet
                 wallet.processSale(sale);
+                clInterpreter.saleCompleted(sale);
+            }
+            if (sale.username == "bot")
+            {
+                // update the wallet
+                wallet.processSale(sale);
+                bot.saleCompleted(sale);
             }
         }
 

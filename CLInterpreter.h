@@ -37,7 +37,7 @@ public:
 //    std::function<void()> gotoNextTimeFrame_Event;
 //    std::function<void()> quitRequest_Event;
     void processFrame(const std::string& currentTime) override;
-
+    void saleCompleted(const OrderBookEntry& obe) const override;
 };
 
 

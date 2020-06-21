@@ -109,6 +109,10 @@ const BotRemoteControl Bot::GetRemote() {
     return remote;
 }
 
+void Bot::saleCompleted(const OrderBookEntry &obe) const {
+    m_logger << obe.toString();
+}
+
 //void Bot::enterAsk(const OrderBookEntry& obe) {
 //    m_orderBook.insertOrder(obe);
 //    m_logger << obe.toString();

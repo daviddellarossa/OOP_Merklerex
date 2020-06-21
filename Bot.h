@@ -48,6 +48,7 @@ public:
 //    std::function<void()> quitRequest_Event;
 
     void processFrame(const std::string& currentTime) override;
+    void saleCompleted(const OrderBookEntry& obe) const override;
 
     //Interface IBotControl
     bool isEnabled() const override { return m_isEnabled; }

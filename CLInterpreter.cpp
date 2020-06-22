@@ -54,18 +54,18 @@ void CLInterpreter::processUserOption(int userOption){
                 gotoNextTimeFrame_Event();
             break;
         case 7:
-            if(m_botRemoteControl.isEnabled)
-                std::cout << "Bot status:" <<  (m_botRemoteControl.isEnabled() ? "enabled" :"disabled") << std::endl;
+            if(m_botRemoteControl.processFrame)
+                m_botRemoteControl.processFrame(m_currentTime);
             break;
+//        case 8:
+//            if(m_botRemoteControl.enable)
+//                m_botRemoteControl.enable();
+//            break;
+//        case 9:
+//            if(m_botRemoteControl.disable)
+//                m_botRemoteControl.disable();
+//            break;
         case 8:
-            if(m_botRemoteControl.enable)
-                m_botRemoteControl.enable();
-            break;
-        case 9:
-            if(m_botRemoteControl.disable)
-                m_botRemoteControl.disable();
-            break;
-        case 10:
             if(quitRequest_Event)
                 quitRequest_Event();
             break;
@@ -81,6 +81,7 @@ void CLInterpreter::printHelp() const {
 }
 
 void CLInterpreter::printMenu() const {
+    std::cout << "============================" << std::endl;
     // 1 print help
     std::cout << "1: Print help" << std::endl;
     // 2 print exchange stats
@@ -94,19 +95,16 @@ void CLInterpreter::printMenu() const {
     // 6 continue
     std::cout << "6: Continue" << std::endl;
     // 7 get bot status
-    std::cout << "7: Get Bot status" << std::endl;
-    // 8 enable bot
-    std::cout << "8: Enable Bot" << std:: endl;
-    // 9 disable bot
-    std::cout << "9: Disable Bot" << std::endl;
-    // 10 quit
-    std::cout << "10: Quit" << std::endl;
+    std::cout << "7: Let Bot process current frame" << std::endl;
+    // 8 quit
+    std::cout << "8: Quit" << std::endl;
     std::cout << "============================" << std::endl;
 
     std::cout << "Current time is:" << m_currentTime << std::endl;
 }
 
 void CLInterpreter::printWallet() const {
+    std::cout << "Wallet content:" << std::endl;
     std::cout << m_wallet.toString() << std::endl;
 }
 
@@ -169,19 +167,11 @@ void CLInterpreter::enterAsk(){
             );
             obe.username = "simuser";
             enterAsk_Event(obe);
-//            if (m_wallet.canFulfillOrder(obe))
-//            {
-//                std::cout << "Wallet looks good. " << std::endl;
-//                m_orderBook.insertOrder(obe);
-//            }
-//            else {
-//                std::cout << "Wallet has insufficient funds . " << std::endl;
-//            }
         }catch(const std::exception& ex){
             std::cout << "MerkelMain::enterAsk - Bad input" << std::endl;
         }
     }
-    std::cout << "You typed:" << input << std::endl;
+//    std::cout << "You typed:" << input << std::endl;
 }
 
 void CLInterpreter::enterBid(){
@@ -205,20 +195,11 @@ void CLInterpreter::enterBid(){
             );
             obe.username = "simuser";
             enterBid_Event(obe);
-//            if (m_wallet.canFulfillOrder(obe))
-//            {
-//                std::cout << "Wallet looks good. " << std::endl;
-//                m_orderBook.insertOrder(obe);
-//            }
-//            else {
-//                std::cout << "Wallet has insufficient funds . " << std::endl;
-//            }
         }catch (const std::exception& e)
         {
             std::cout << " MerkelMain::enterBid Bad input " << std::endl;
         }
     }
-
 }
 
 void CLInterpreter::saleCompleted(const OrderBookEntry &obe) const {

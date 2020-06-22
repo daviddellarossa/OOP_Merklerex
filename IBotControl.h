@@ -7,9 +7,8 @@
 
 class IBotControl {
 public:
-    virtual bool isEnabled() const = 0;
-    virtual void enable() = 0;
-    virtual void disable() = 0;
+
+    virtual void processFrame(const std::string& currentTime) = 0;
     virtual void logWallet() const = 0;
     virtual void logBids() const = 0;
     virtual void logAsks() const = 0;

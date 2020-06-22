@@ -9,9 +9,7 @@
 
 class BotRemoteControl{
 public:
-    std::function<bool()> isEnabled;
-    std::function<void()> enable;
-    std::function<void()> disable;
+    std::function<void(const std::string& currentTime)> processFrame;
     std::function<void()> logWallet;
     std::function<void()> logBids;
     std::function<void()> logAsks;

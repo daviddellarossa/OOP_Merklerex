@@ -15,7 +15,7 @@ Bot::Bot(OrderBook &orderBook, Wallet &wallet) : m_orderBook{orderBook}, m_walle
 }
 
 void Bot::processFrame(const std::string& currentTime) {
-    if(!m_isEnabled) return;
+//    if(!m_isEnabled) return;
     m_currentTime = currentTime;
     //analyze the orderBook for the current time frame, product by product
     for(auto& product : m_avgPrices){
@@ -110,9 +110,10 @@ void Bot::logSales() const {
 
 const BotRemoteControl Bot::GetRemote() {
     BotRemoteControl remote;
-    remote.disable = [this]{ this->disable(); };
-    remote.enable = [this]{ this->enable(); };
-    remote.isEnabled = [this]{ return this->m_isEnabled; };
+//    remote.disable = [this]{ this->disable(); };
+//    remote.enable = [this]{ this->enable(); };
+//    remote.isEnabled = [this]{ return this->m_isEnabled; };
+    remote.processFrame = [this](const std::string& currentTime){ return this->processFrame(currentTime); };
     remote.logAsks = [this]{ return this->logAsks(); };
     remote.logBids = [this]{ return this->logBids(); };
     remote.logSales = [this]{ return this->logSales(); };
@@ -121,7 +122,7 @@ const BotRemoteControl Bot::GetRemote() {
 }
 
 void Bot::saleCompleted(const OrderBookEntry &obe) const {
-    m_logger << obe.toString();
+    m_logger << obe.toString() << std::endl;
 }
 
 //void Bot::enterAsk(const OrderBookEntry& obe) {

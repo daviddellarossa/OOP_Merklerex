@@ -55,7 +55,7 @@ bool Wallet::containsCurrency(const std::string& type, double amount) const
     if (currencies.count(type) == 0) // not there yet
         return false;
     else
-        return currencies.at(type) >= amount - reserves.at(type);
+        return currencies.at(type) >= amount - reserves[type];
 
 }
 

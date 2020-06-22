@@ -29,7 +29,7 @@ private:
     const OrderBook& m_orderBook;
     const Wallet& m_wallet;
     mutable std::ofstream m_logger;
-    bool m_isEnabled = false;
+//    bool m_isEnabled = false;
 
     /**
      * Contains the last AVGARRSIZE average prices for the product.
@@ -51,9 +51,9 @@ public:
     void saleCompleted(const OrderBookEntry& obe) const override;
 
     //Interface IBotControl
-    bool isEnabled() const override { return m_isEnabled; }
-    void enable() override{ m_isEnabled = true; }
-    void disable() override{ m_isEnabled = false; }
+//    bool isEnabled() const override { return m_isEnabled; }
+//    void enable() override{ m_isEnabled = true; }
+//    void disable() override{ m_isEnabled = false; }
     void logWallet() const override ;
     void logBids() const override ;
     void logAsks() const override ;

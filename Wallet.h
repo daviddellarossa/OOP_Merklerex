@@ -17,7 +17,7 @@ public:
     /** insert currency to the wallet */
     void insertCurrency(const std::string& type, double amount);
     /** remove currency from the wallet */
-    bool removeCurrency(const std::string& type, double amount);
+//    bool removeCurrency(const std::string& type, double amount);
 
     /** check if the wallet contains this much currency or more */
     bool containsCurrency(const std::string& type, double amount) const;
@@ -29,6 +29,8 @@ public:
     void processSale(const OrderBookEntry& sale);
 
     double currencyAmount(const std::string& type) const;
+    double reserveAmount(const std::string& type, double amount) const;
+    void clearReserves() const ;
 
     /** generate a string representation of the wallet */
     std::string toString() const;
@@ -37,7 +39,7 @@ public:
 
 private:
     std::map<std::string,double> currencies;
-
+    mutable std::map<std::string,double> reserves;
 };
 
 

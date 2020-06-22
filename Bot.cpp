@@ -15,10 +15,10 @@ Bot::Bot(OrderBook &orderBook, Wallet &wallet) : m_orderBook{orderBook}, m_walle
 }
 
 void Bot::processFrame(const std::string& currentTime) {
-    if(m_isEnabled == false) return;
+    if(!m_isEnabled) return;
     m_currentTime = currentTime;
     //analyze the orderBook for the current time frame, product by product
-    for(auto product : m_avgPrices){
+    for(auto& product : m_avgPrices){
 
         //get currencies for the current prduct
         std::vector<std::string> currencies = CSVReader::tokenize(product.first, '/');
@@ -28,14 +28,25 @@ void Bot::processFrame(const std::string& currentTime) {
 
         //get all asks for this product in the current timeframe from the orderbook
         auto asks = m_orderBook.getOrders(OrderBookType::ask, product.first, m_currentTime);
+        //get all bids for this product in the current timeframe from the orderbook
+        auto bids = m_orderBook.getOrders(OrderBookType::bid, product.first, m_currentTime);
+
+        //Calculate the new average for the current period and add it to the historical for the product
+        double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
+        double sumOfBidPrice = std::accumulate(bids.begin(), bids.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
+        product.second.insert((sumOfAskPrice + sumOfBidPrice) / (asks.size() + bids.size()));
+
+        if(sma == 0)
+            continue;
 
         //I'm going to buy all asks falling below the sma
         //max amount I would buy
         auto maxBidAmount = std::accumulate(asks.begin(), asks.end(), 0.0, [&sma](double sum, const auto& x){ return x.price < sma ? sum + x.amount : sum ; });
         //max amount of Curr1 I can buy with the amount of Curr2 in my wallet, at the unitary price sma
-        double walletAmount = m_wallet.currencyAmount(currencies.at(1)) / sma;
+        double availCurrency = m_wallet.reserveAmount(currencies.at(1), maxBidAmount * sma);
+        double availableAmount = availCurrency / sma;
         //max amount I can actually buy
-        double bidAmount = std::min(maxBidAmount, walletAmount);
+        double bidAmount = std::min(maxBidAmount, availableAmount);
 
         if(bidAmount > 0){
             auto obe = OrderBookEntry{
@@ -43,27 +54,30 @@ void Bot::processFrame(const std::string& currentTime) {
                     bidAmount,
                     m_currentTime,
                     product.first,
-                    OrderBookType::ask,
+                    OrderBookType::bid,
                     "bot"
             };
             m_logger << obe.toString();
             enterBid_Event(obe);
         }
 
-        //get all bids for this product in the current timeframe from the orderbook
-        auto bids = m_orderBook.getOrders(OrderBookType::bid, product.first, m_currentTime);
 
         //I'm going to try to sell to all bids above the sma
         //Max amount requested from the orderbook
         auto maxAskAmount = std::accumulate(bids.begin(), bids.end(), 0.0, [&sma](double sum, const auto& x){ return x.price > sma ? sum + x.amount : sum ; });
+
+        availCurrency = m_wallet.reserveAmount(currencies.at(0), maxAskAmount * sma);
         //amount actually in my wallet I can sell
-        walletAmount = m_wallet.currencyAmount(currencies.at(0));
+        availableAmount = availCurrency / sma;
+
+        //amount actually in my wallet I can sell
+//        walletAmount = m_wallet.currencyAmount(currencies.at(0));
 
         //if there are possible bids and I have some currency in my wallet
-        if(maxAskAmount > 0 && walletAmount > 0){
+        if(maxAskAmount > 0 && availableAmount > 0){
             auto obe = OrderBookEntry{
                     sma,
-                    walletAmount,
+                    availableAmount,
                     m_currentTime,
                     product.first,
                     OrderBookType::ask,
@@ -73,10 +87,7 @@ void Bot::processFrame(const std::string& currentTime) {
             enterAsk_Event(obe);
         }
 
-        //Calculate the new average for the current period and add it to the historical for the product
-        double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
-        double sumOfBidPrice = std::accumulate(bids.begin(), bids.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
-        product.second.insert((sumOfAskPrice + sumOfBidPrice) / (asks.size() + bids.size()));
+
     }
 
 }

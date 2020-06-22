@@ -134,14 +134,14 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(const std::string& produc
                                     product,
                                     OrderBookType::asksale};
 
-                if (bid.username == "simuser")
+                if (bid.username != "dataset")
                 {
-                    sale.username = "simuser";
+                    sale.username = bid.username;
                     sale.orderType = OrderBookType::bidsale;
                 }
-                if (ask.username == "simuser")
+                if (ask.username != "dataset")
                 {
-                    sale.username = "simuser";
+                    sale.username = ask.username;
                     sale.orderType =  OrderBookType::asksale;
                 }
 

@@ -67,7 +67,6 @@ std::string Wallet::toString() const
         std::string currency = pair.first;
         double amount = pair.second;
         ss << currency << " : " << std::to_string(amount) << "\n";
-//        s += currency + " : " + std::to_string(amount) + "\n";
     }
     return ss.str();
 }
@@ -132,7 +131,7 @@ void Wallet::processSale(const OrderBookEntry& sale)
 //    for(auto& res : reserves)
 //        clearReserve(res.first);
 }
-std::ostream& operator<<(std::ostream& os,  Wallet& wallet)
+std::ostream& operator<<(std::ostream& os,  const Wallet& wallet)
 {
     os << wallet.toString();
     return os;

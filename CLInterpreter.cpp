@@ -202,6 +202,6 @@ void CLInterpreter::enterBid(){
     }
 }
 
-void CLInterpreter::saleCompleted(const OrderBookEntry &obe) const {
+void CLInterpreter::saleCompleted(const OrderBookEntry &obe) {
     std::cout << obe.toString() << std::endl;
 }

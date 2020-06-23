@@ -23,8 +23,8 @@ MerkelMain::MerkelMain() :
     clInterpreter.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
 
     //bot is not allowed to terminate the application
-//    bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
-//    bot.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
+    //bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
+    //bot.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
     bot.enterAsk_Event = [this](const OrderBookEntry& obe){ this->enterAsk_EventHandler(obe); };
     bot.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
 }
@@ -35,7 +35,6 @@ void MerkelMain::init(){
     wallet.insertCurrency("BTC", 10);
 
     while(keepRunning){
-//        bot.processFrame(currentTime);
         clInterpreter.processFrame(currentTime);
     }
 }

@@ -111,8 +111,6 @@ void Wallet::processSale(const OrderBookEntry& sale)
         currencies[incomingCurrency] += incomingAmount;
         currencies[outgoingCurrency] -= outgoingAmount;
 
-//        reserves[outgoingCurrency] -= outgoingAmount;
-
     }
     // bid
     if (sale.orderType == OrderBookType::bidsale)
@@ -125,11 +123,7 @@ void Wallet::processSale(const OrderBookEntry& sale)
         currencies[incomingCurrency] += incomingAmount;
         currencies[outgoingCurrency] -= outgoingAmount;
 
-//        reserves[outgoingCurrency] -= outgoingAmount;
     }
-//    reset reserves
-//    for(auto& res : reserves)
-//        clearReserve(res.first);
 }
 std::ostream& operator<<(std::ostream& os,  const Wallet& wallet)
 {
@@ -137,11 +131,11 @@ std::ostream& operator<<(std::ostream& os,  const Wallet& wallet)
     return os;
 }
 
-double Wallet::currencyAmount(const std::string &type) const {
-    if(currencies.find(type) == currencies.end())
-        return 0;
-    return currencies.at(type);
-}
+//double Wallet::currencyAmount(const std::string &type) const {
+//    if(currencies.find(type) == currencies.end())
+//        return 0;
+//    return currencies.at(type);
+//}
 
 /**
  * Return the available amount of Currency less than or equal to amount
@@ -163,7 +157,7 @@ double Wallet::reserveAmount(const std::string &type, double amount) const {
         return amount;
     }else{ //not enough currency available - reserves already set; return the max quantity available
         auto reserved = currency->second - reserves[type];
-        reserves[type] = currency->second;
+        reserves[type] += reserved;
         return reserved;
     }
 }

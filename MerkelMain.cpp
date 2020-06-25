@@ -96,6 +96,7 @@ void MerkelMain::gotoNextTimeFrame(){
 
     }
     wallet.clearReserves();
+    orderBook.removeCustomOrders();
     currentTime = orderBook.getNextTime(currentTime);
 }
 

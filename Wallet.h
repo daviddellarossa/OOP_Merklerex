@@ -28,7 +28,7 @@ public:
     */
     void processSale(const OrderBookEntry& sale);
 
-    double currencyAmount(const std::string& type) const;
+//    double currencyAmount(const std::string& type) const;
     double reserveAmount(const std::string& type, double amount) const;
     void clearReserves() const ;
 

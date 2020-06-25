@@ -32,7 +32,6 @@ public:
     CLInterpreter(OrderBook& orderBook, Wallet& wallet, const BotRemoteControl& botRemoteControl);
 
     //IActor interface
-
     void processFrame(const std::string& currentTime) override;
     void saleCompleted(const OrderBookEntry& obe) override;
 };

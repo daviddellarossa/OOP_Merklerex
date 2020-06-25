@@ -200,5 +200,20 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(const std::string& produc
             }
         }
     }
+
     return sales;
+}
+
+/**
+ * Remove from the Orderbook the orders not in the original dataset
+ * This is necessary because the orderbook rolls over when reaching the end of the dataset
+ * and further processing would find the orders inserted at the previous run.
+ * But this would mess up with the wallet amount check, as the matchAsksToBids method would find more orders
+ * than the currency amount currently contained in the wallet.
+ */
+void OrderBook::removeCustomOrders() {
+    for(int i = orders.size()-1; i >= 0; i--){
+        if(orders[i].username != "dataset")
+            orders.erase(orders.begin() + i);
+    }
 }

@@ -28,6 +28,7 @@ public:
     std::string getNextTime(const std::string& timestamp) const;
 
     void insertOrder(const OrderBookEntry& order);
+    void removeCustomOrders();
 
     std::vector<OrderBookEntry> matchAsksToBids(const std::string& product, const std::string& timestamp) const;
 

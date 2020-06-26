@@ -7,8 +7,8 @@
 #include "CLInterpreter.h"
 
 CLInterpreter::CLInterpreter(
-        OrderBook &orderBook,
-        Wallet &wallet,
+        const OrderBook &orderBook,
+        const Wallet &wallet,
         const BotRemoteControl& botRemoteControl) :
         m_orderBook{orderBook},
         m_wallet{wallet},
@@ -76,8 +76,6 @@ void CLInterpreter::processUserOption(int userOption){
         default:
             break;
     }
-
-
 }
 
 void CLInterpreter::printHelp() const {
@@ -111,7 +109,6 @@ void CLInterpreter::printMenu() const {
     // 12 quit
     std::cout << "12: Quit" << std::endl;
     std::cout << "============================" << std::endl;
-
     std::cout << "Current time is:" << m_currentTime << std::endl;
 }
 
@@ -127,8 +124,6 @@ void CLInterpreter::printMarketStats() const {
         std::cout << "Asks seen: " << entries.size() << std::endl;
         std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
         std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
-
-
     }
 }
 
@@ -142,11 +137,9 @@ int CLInterpreter::getUserOption() {
         userOption = std::stoi(line);
     }catch(const std::exception& e)
     {
-        //
+        // No action
     }
-//    std::cout << "You chose: " << userOption << std::endl;
     return userOption;
-
 }
 
 
@@ -173,7 +166,6 @@ void CLInterpreter::enterAsk(){
             std::cout << "MerkelMain::enterAsk - Bad input" << std::endl;
         }
     }
-//    std::cout << "You typed:" << input << std::endl;
 }
 
 void CLInterpreter::enterBid(){

@@ -119,25 +119,41 @@ void Bot::processFrame(const std::string& currentTime) {
 }
 
 void Bot::logWallet() const {
-    m_logger << m_wallet.toString() << std::endl;
+    std::stringstream ss;
+    ss << "Wallet content: \n";
+    ss << m_wallet.toString();
+    m_logger << ss.str();
+    m_logger.flush();
 }
 
 void Bot::logBids() const {
-    std::stringstream ss{"History of Bids: \n"};
-    std::for_each(m_historicalBids.begin(), m_historicalBids.end(), [&ss](const OrderBookEntry& x){ ss << x.toString() << std::endl; });
-    m_logger << ss.str() << std::endl;
+    std::stringstream ss;
+    ss << "History of Bids: \n";
+    std::for_each(m_historicalBids.begin(), m_historicalBids.end(), [&ss](const OrderBookEntry& x){ ss << "\t" << x.toString() << std::endl; });
+    if(m_historicalBids.empty())
+        ss << "None" << std::endl;
+    m_logger << ss.str();
+    m_logger.flush();
 }
 
 void Bot::logAsks() const {
-    std::stringstream ss{"History of Asks: \n"};
-    std::for_each(m_historicalAsks.begin(), m_historicalAsks.end(), [&ss](const OrderBookEntry& x){ ss << x.toString() << std::endl; });
-    m_logger << ss.str() << std::endl;
+    std::stringstream ss;
+    ss << "History of Asks: \n";
+    std::for_each(m_historicalAsks.begin(), m_historicalAsks.end(), [&ss](const OrderBookEntry& x){ ss << "\t" << x.toString() << std::endl; });
+    if(m_historicalAsks.empty())
+        ss << "None" << std::endl;
+    m_logger << ss.str();
+    m_logger.flush();
 }
 
 void Bot::logSales() const {
-    std::stringstream ss{"History of Sells: \n"};
-    std::for_each(m_historicalSells.begin(), m_historicalSells.end(), [&ss](const OrderBookEntry& x){ ss << x.toString() << std::endl; });
-    m_logger << ss.str() << std::endl;
+    std::stringstream ss;
+    ss << "History of Sells: \n";
+    std::for_each(m_historicalSells.begin(), m_historicalSells.end(), [&ss](const OrderBookEntry& x){ ss << "\t" << x.toString() << std::endl; });
+    if(m_historicalSells.empty())
+        ss << "None" << std::endl;
+    m_logger << ss.str();
+    m_logger.flush();
 }
 
 const BotRemoteControl Bot::GetRemote(){

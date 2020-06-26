@@ -38,13 +38,9 @@ void CLInterpreter::processUserOption(int userOption){
             break;
         case 3:
             enterAsk();
-//            if(enterAsk_Event)
-//                enterAsk_Event();
             break;
         case 4:
             enterBid();
-//            if(enterBid_Event)
-//                enterBid_Event();
             break;
         case 5:
             printWallet();
@@ -57,15 +53,23 @@ void CLInterpreter::processUserOption(int userOption){
             if(m_botRemoteControl.processFrame)
                 m_botRemoteControl.processFrame(m_currentTime);
             break;
-//        case 8:
-//            if(m_botRemoteControl.enable)
-//                m_botRemoteControl.enable();
-//            break;
-//        case 9:
-//            if(m_botRemoteControl.disable)
-//                m_botRemoteControl.disable();
-//            break;
         case 8:
+            if(m_botRemoteControl.logWallet)
+                m_botRemoteControl.logWallet();
+            break;
+        case 9:
+            if(m_botRemoteControl.logBids)
+                m_botRemoteControl.logBids();
+            break;
+        case 10:
+            if(m_botRemoteControl.logAsks)
+                m_botRemoteControl.logAsks();
+            break;
+        case 11:
+            if(m_botRemoteControl.logSales)
+                m_botRemoteControl.logSales();
+            break;
+        case 12:
             if(quitRequest_Event)
                 quitRequest_Event();
             break;
@@ -96,8 +100,16 @@ void CLInterpreter::printMenu() const {
     std::cout << "6: Continue" << std::endl;
     // 7 get bot status
     std::cout << "7: Let Bot process current frame" << std::endl;
-    // 8 quit
-    std::cout << "8: Quit" << std::endl;
+    //8 let bot log wallet
+    std::cout << "8: Let Bot log the wallet" << std::endl;
+    //9 let bot log bids
+    std::cout << "9: Let Bot log its bids" << std::endl;
+    //10 let bot log asks
+    std::cout << "10: Let Bot log its asks" << std::endl;
+    //11 let bot log sales
+    std::cout << "11: Let Bot log its sales" << std::endl;
+    // 12 quit
+    std::cout << "12: Quit" << std::endl;
     std::cout << "============================" << std::endl;
 
     std::cout << "Current time is:" << m_currentTime << std::endl;
@@ -118,16 +130,6 @@ void CLInterpreter::printMarketStats() const {
 
 
     }
-//    std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
-//    unsigned int bids{0};
-//    unsigned int asks{0};
-//    for(OrderBookEntry& e : orders){
-//        if(e.orderType == OrderBookType::bid)
-//            ++bids;
-//        else if(e.orderType == OrderBookType::ask)
-//            ++asks;
-//    }
-//    std::cout << "Order book asks: " << asks << "; bids: " << bids << std::endl;
 }
 
 int CLInterpreter::getUserOption() {

@@ -51,7 +51,7 @@ void Bot::processFrame(const std::string& currentTime) {
         //If for the current iteration there are neither asks nor bids, return
         if(asks.size() == 0 && bids.size() == 0){
             m_logger << "No bids or asks for this turn." << std::endl;
-            return;
+            continue;
         }
         //Calculate the new average for the current period and add it to the historical for the product
         double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](double x, const OrderBookEntry& y){ return x + y.m_price; });

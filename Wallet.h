@@ -15,7 +15,7 @@ class Wallet
 public:
     Wallet();
     /** insert currency to the wallet */
-    void insertCurrency(const std::string& type, double amount);1
+    void insertCurrency(const std::string& type, double amount);
     /** check if the wallet contains this much currency or more */
     bool containsCurrency(const std::string& type, double amount) const;
     /** checks if the wallet can cope with this ask or bid.*/

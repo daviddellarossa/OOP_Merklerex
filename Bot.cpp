@@ -24,9 +24,9 @@ Bot::Bot(const OrderBook &orderBook, const Wallet &wallet) :
 
 void Bot::processFrame(const std::string& currentTime) {
 
-    m_currentTime = currentTime;
+    this->m_currentTime = currentTime;
     m_logger << "\n======================================================\n";
-    m_logger << "Processing frame " << m_currentTime << std::endl;
+    m_logger << "Processing frame " << this->m_currentTime << std::endl;
 
     m_logger << "Averages:" << std::endl;
     for(auto& product : m_avgPrices){
@@ -35,7 +35,7 @@ void Bot::processFrame(const std::string& currentTime) {
     m_logger << std::endl;
     m_logger << "What's in my wallet:\n" << m_wallet.toString() << std::endl;
 
-    //analyze the orderBook for the current time frame, product by product
+    //analyze the m_orderBook for the current time frame, product by product
     for(auto& product : m_avgPrices){
         //get currencies for the current product
         std::vector<std::string> currencies = CSVReader::tokenize(product.first, '/');
@@ -44,9 +44,9 @@ void Bot::processFrame(const std::string& currentTime) {
         auto sma = product.second.average();
 
         //get all asks for this product in the current timeframe from the orderbook
-        auto asks = m_orderBook.getOrders(OrderBookType::ask, product.first, m_currentTime);
+        auto asks = m_orderBook.getOrders(OrderBookType::ask, product.first, this->m_currentTime);
         //get all bids for this product in the current timeframe from the orderbook
-        auto bids = m_orderBook.getOrders(OrderBookType::bid, product.first, m_currentTime);
+        auto bids = m_orderBook.getOrders(OrderBookType::bid, product.first, this->m_currentTime);
 
         //If for the current iteration there are neither asks nor bids, return
         if(asks.size() == 0 && bids.size() == 0){
@@ -54,8 +54,8 @@ void Bot::processFrame(const std::string& currentTime) {
             return;
         }
         //Calculate the new average for the current period and add it to the historical for the product
-        double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
-        double sumOfBidPrice = std::accumulate(bids.begin(), bids.end(), 0.0, [](auto x, const auto& y){ return x + y.price; });
+        double sumOfAskPrice = std::accumulate(asks.begin(), asks.end(), 0.0, [](double x, const OrderBookEntry& y){ return x + y.m_price; });
+        double sumOfBidPrice = std::accumulate(bids.begin(), bids.end(), 0.0, [](double x, const OrderBookEntry& y){ return x + y.m_price; });
 
         /* Insert the newly calculate price average into the average manager. The new average is calculated taking
          * into account asks and bids */
@@ -70,7 +70,7 @@ void Bot::processFrame(const std::string& currentTime) {
 
         // I'm going to buy all asks falling below the sma
         // The max amount I would buy is
-        auto maxBidAmount = std::accumulate(asks.begin(), asks.end(), 0.0, [&sma](double sum, const auto& x){ return x.price < sma ? sum + x.amount : sum ; });
+        auto maxBidAmount = std::accumulate(asks.begin(), asks.end(), 0.0, [&sma](double sum, const OrderBookEntry& x){ return x.m_price < sma ? sum + x.m_amount : sum ; });
         m_logger << "Available amount of asks below average: " << maxBidAmount << std::endl;
 
         //max amount of Currency1 I can buy with the amount of Currency2 in my wallet, at the unitary price sma
@@ -86,7 +86,7 @@ void Bot::processFrame(const std::string& currentTime) {
             auto obe = OrderBookEntry{
                     sma,
                     bidAmount,
-                    m_currentTime,
+                    this->m_currentTime,
                     product.first,
                     OrderBookType::bid,
                     "bot"
@@ -100,7 +100,7 @@ void Bot::processFrame(const std::string& currentTime) {
 
         //I'm going to try to sell to all bids above the sma
         //Max amount requested from the orderbook
-        auto maxAskAmount = std::accumulate(bids.begin(), bids.end(), 0.0, [&sma](double sum, const auto& x){ return x.price > sma ? sum + x.amount : sum ; });
+        auto maxAskAmount = std::accumulate(bids.begin(), bids.end(), 0.0, [&sma](double sum, const OrderBookEntry& x){ return x.m_price > sma ? sum + x.m_amount : sum ; });
         m_logger << "Available amount of bids above average: " << maxAskAmount << std::endl;
 
         availCurrency = m_wallet.reserveAmount(currencies.at(0), maxAskAmount * sma);
@@ -116,7 +116,7 @@ void Bot::processFrame(const std::string& currentTime) {
             auto obe = OrderBookEntry{
                     sma,
                     availableAmount,
-                    m_currentTime,
+                    this->m_currentTime,
                     product.first,
                     OrderBookType::ask,
                     "bot"
@@ -161,14 +161,14 @@ void Bot::logAsks() const {
 void Bot::logSales() const {
     std::stringstream ss;
     ss << "History of Sells: \n";
-    std::for_each(m_historicalSells.begin(), m_historicalSells.end(), [&ss](const OrderBookEntry& x){ ss << "\t" << x.toString() << std::endl; });
-    if(m_historicalSells.empty())
+    std::for_each(m_historicalSales.begin(), m_historicalSales.end(), [&ss](const OrderBookEntry& x){ ss << "\t" << x.toString() << std::endl; });
+    if(m_historicalSales.empty())
         ss << "None" << std::endl;
     m_logger << ss.str();
     m_logger.flush();
 }
 
-const BotRemoteControl Bot::GetRemote(){
+const BotRemoteControl Bot::getRemote(){
     BotRemoteControl remote;
     //Bind the BotRemoteControl's properties to the actual methods in Bot they will invoke
     remote.processFrame = [this](const std::string& currentTime){ return this->processFrame(currentTime); };
@@ -182,5 +182,5 @@ const BotRemoteControl Bot::GetRemote(){
 void Bot::saleCompleted(const OrderBookEntry &obe) {
     m_logger << "Sale completed: " << obe.toString() << std::endl;
     //add the sell to the historical
-    m_historicalSells.push_back(obe);
+    m_historicalSales.push_back(obe);
 }

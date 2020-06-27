@@ -13,12 +13,12 @@ OrderBookEntry::OrderBookEntry(
         std::string product,
         OrderBookType orderType,
         std::string _username) :
-            price(price),
-            amount(amount),
-            timestamp(std::move(timestamp)),
-            product(std::move(product)),
-            orderType(orderType),
-            username(_username) {
+        m_price(price),
+        m_amount(amount),
+        m_timestamp(std::move(timestamp)),
+        m_product(std::move(product)),
+        m_orderType(orderType),
+        m_username(_username) {
 
 }
 OrderBookType OrderBookEntry::stringToOrderBookType(const std::string& std){
@@ -29,7 +29,7 @@ OrderBookType OrderBookEntry::stringToOrderBookType(const std::string& std){
 
 std::string OrderBookEntry::toString() const {
     std::stringstream ss;
-    switch(orderType){
+    switch(m_orderType){
         case OrderBookType::ask:
             ss << "Ask: ";
             break;
@@ -46,6 +46,6 @@ std::string OrderBookEntry::toString() const {
             ss << "Unknown: ";
             break;
     }
-    ss << product << "," << price << "," << amount;
+    ss << m_product << "," << m_price << "," << m_amount;
     return ss.str();
 }

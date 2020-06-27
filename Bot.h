@@ -39,7 +39,7 @@ private:
     /** Maps each product to an instance of RollingAverageManager */
     std::map<std::string, RollingAverageManager> m_avgPrices;
     /** Historical collection of all Sells made by the bot */
-    std::vector<OrderBookEntry> m_historicalSells;
+    std::vector<OrderBookEntry> m_historicalSales;
     /** Historical collection of all Asks made by the bot */
     std::vector<OrderBookEntry> m_historicalAsks;
     /** Historical collection of all Bids made by the bot */
@@ -65,7 +65,7 @@ public:
      */
     void saleCompleted(const OrderBookEntry& obe) override;
 
-    //Interface IBotControl
+    // IBotControl interface
     /** Log the Wallet */
     void logWallet() const override ;
     /** Log the bids done by the Bot */
@@ -76,7 +76,7 @@ public:
     void logSales() const override ;
 
     /** Generate an instance of a BotRemoteControl class, which is a Mediator that can be used to control the bot */
-    const BotRemoteControl GetRemote();
+    const BotRemoteControl getRemote();
 };
 
 

@@ -160,7 +160,7 @@ void CLInterpreter::enterAsk(){
                     tokens[0],
                     OrderBookType::ask
             );
-            obe.username = "simuser";
+            obe.m_username = "simuser";
             enterAsk_Event(obe);
         }catch(const std::exception& ex){
             std::cout << "MerkelMain::enterAsk - Bad input" << std::endl;
@@ -187,7 +187,7 @@ void CLInterpreter::enterBid(){
                     tokens[0],
                     OrderBookType::bid
             );
-            obe.username = "simuser";
+            obe.m_username = "simuser";
             enterBid_Event(obe);
         }catch (const std::exception& e)
         {

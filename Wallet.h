@@ -15,10 +15,7 @@ class Wallet
 public:
     Wallet();
     /** insert currency to the wallet */
-    void insertCurrency(const std::string& type, double amount);
-    /** remove currency from the wallet */
-//    bool removeCurrency(const std::string& type, double amount);
-
+    void insertCurrency(const std::string& type, double amount);1
     /** check if the wallet contains this much currency or more */
     bool containsCurrency(const std::string& type, double amount) const;
     /** checks if the wallet can cope with this ask or bid.*/
@@ -28,8 +25,15 @@ public:
     */
     void processSale(const OrderBookEntry& sale);
 
-//    double currencyAmount(const std::string& type) const;
+    /**
+     * Set a reserve on a currency in the wallet.
+     * It returns the actual amount reserved based on they currency availability in the wallet
+     * @param type - Currency
+     * @param amount - Amount to reserve
+     * @return - The actual amount reserved
+     */
     double reserveAmount(const std::string& type, double amount) const;
+    /** Clear all the reserves put on currencies */
     void clearReserves() const ;
 
     /** generate a string representation of the wallet */
@@ -38,8 +42,12 @@ public:
 
 
 private:
-    std::map<std::string,double> currencies;
-    mutable std::map<std::string,double> reserves;
+    /** Contains the currency type and amount hold in the wallet */
+    std::map<std::string,double> m_currencies;
+    /** Contains the reserves added to currencies during the time-frame processing, in order not to reuse
+     * the same money on different asks/bids
+     */
+    mutable std::map<std::string,double> m_reserves;
 };
 
 

@@ -24,26 +24,26 @@ public:
 
     static bool compareByTimestamp(const OrderBookEntry& e1, const OrderBookEntry& e2)
     {
-        return e1.timestamp < e2.timestamp;
+        return e1.m_timestamp < e2.m_timestamp;
     }
     static bool compareByPriceAsc(const OrderBookEntry& e1, const OrderBookEntry& e2)
     {
-        return e1.price < e2.price;
+        return e1.m_price < e2.m_price;
     }
     static bool compareByPriceDesc(const OrderBookEntry& e1, const OrderBookEntry& e2)
     {
-        return e1.price > e2.price;
+        return e1.m_price > e2.m_price;
     }
 
     std::string toString() const;
 
 public:
-    double price;
-    double amount;
-    std::string timestamp;
-    std::string product;
-    OrderBookType orderType;
-    std::string username;
+    double m_price;
+    double m_amount;
+    std::string m_timestamp;
+    std::string m_product;
+    OrderBookType m_orderType;
+    std::string m_username;
 };
 
 

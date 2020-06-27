@@ -28,6 +28,11 @@ public:
     std::string getNextTime(const std::string& timestamp) const;
 
     void insertOrder(const OrderBookEntry& order);
+    /** Method needed exclusively for this simulation.
+     * It is found out that when the time-frame rolls over, it finds bids and asks inserted
+     * either by the Bot or by the user at the previous rolls. This method basically removes
+     * asks and bids not beloging to the initial dataset, that are already processed
+     */
     void removeCustomOrders();
 
     std::vector<OrderBookEntry> matchAsksToBids(const std::string& product, const std::string& timestamp) const;
@@ -36,7 +41,7 @@ public:
     static double getLowPrice(const std::vector<OrderBookEntry>& order);
 
 private:
-    std::vector<OrderBookEntry> orders;
+    std::vector<OrderBookEntry> m_orders;
 };
 
 #endif //MERKLEREX_ORDERBOOK_H

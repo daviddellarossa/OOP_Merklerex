@@ -21,24 +21,37 @@ public:
     /** Call this to start the sim */
     void init();
 
+    /** EventHandler invoked to add a new Ask to the Orderbook */
     void enterAsk_EventHandler(const OrderBookEntry&);
+    /** EventHandler invoked to add a new Bid to the Orderbook */
     void enterBid_EventHandler(const OrderBookEntry&);
+    /** EventHandler invoked to go to next timeframe */
     void gotoNextTimeFrame_EventHandler();
+    /** EventHandler invoked to quit the program */
     void quitRequest_EventHandler();
 
 private:
-
+    /** Enter a new OrderBookEntry of type Ask into the OrderBook */
     void enterAsk(const OrderBookEntry& obe);
+    /** Enter a new OrderBookEntry of type Bid into the OrderBook */
     void enterBid(const OrderBookEntry& obe);
+    /** Move to the next frame */
     void gotoNextTimeFrame();
 
-    bool keepRunning{true};
-    std::string currentTime;
-    OrderBook orderBook; //initialization moved into the constructor
-    Wallet wallet;
-    CLInterpreter clInterpreter;
-    Bot bot;
-    BotRemoteControl botRemoteControl;
+    /** Flag used to control the main iteration of the program. Set it to false to quit the program */
+    bool m_keepRunning{true};
+    /** Current time frame processed */
+    std::string m_currentTime;
+    /** Instance of OrderBook */
+    OrderBook m_orderBook; //initialization moved into the constructor
+    /** Instance of Wallet */
+    Wallet m_wallet;
+    /** Instance of CLInterpreter */
+    CLInterpreter m_clInterpreter;
+    /** Instance of Bot */
+    Bot m_bot;
+    /** Instance of BotRemoteControl */
+    BotRemoteControl m_botRemoteControl;
 };
 
 

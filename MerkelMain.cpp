@@ -13,38 +13,38 @@
 
 
 MerkelMain::MerkelMain() :
-            orderBook("20200317.csv"),
-            bot(orderBook, wallet),
-            botRemoteControl(bot.GetRemote()),
-            clInterpreter(orderBook, wallet, botRemoteControl) {
-    clInterpreter.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
-    clInterpreter.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
-    clInterpreter.enterAsk_Event = [this](const OrderBookEntry& obe){ this->enterAsk_EventHandler(obe); };
-    clInterpreter.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
+        m_orderBook("20200317.csv"),
+        m_bot(m_orderBook, m_wallet),
+        m_botRemoteControl(m_bot.getRemote()),
+        m_clInterpreter(m_orderBook, m_wallet, m_botRemoteControl) {
+    m_clInterpreter.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
+    m_clInterpreter.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
+    m_clInterpreter.enterAsk_Event = [this](const OrderBookEntry& obe){ this->enterAsk_EventHandler(obe); };
+    m_clInterpreter.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
 
     //bot is not allowed to terminate the application
     //bot.quitRequest_Event = [this]{ this->quitRequest_EventHandler(); };
     //bot.gotoNextTimeFrame_Event = [this]{ this->gotoNextTimeFrame_EventHandler(); };
-    bot.enterAsk_Event = [this](const OrderBookEntry& obe){ this->enterAsk_EventHandler(obe); };
-    bot.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
+    m_bot.enterAsk_Event = [this](const OrderBookEntry& obe){ this->enterAsk_EventHandler(obe); };
+    m_bot.enterBid_Event = [this](const OrderBookEntry& obe){ this->enterBid_EventHandler(obe); };
 }
 
 void MerkelMain::init(){
-    currentTime = orderBook.getEarliestTime();
+    m_currentTime = m_orderBook.getEarliestTime();
 
-    wallet.insertCurrency("BTC", 10);
+    m_wallet.insertCurrency("BTC", 10);
 
-    while(keepRunning){
-        clInterpreter.processFrame(currentTime);
+    while(m_keepRunning){
+        m_clInterpreter.processFrame(m_currentTime);
     }
 }
 
 void MerkelMain::enterAsk(const OrderBookEntry& obe){
         try{
-            if (wallet.canFulfillOrder(obe))
+            if (m_wallet.canFulfillOrder(obe))
             {
                 std::cout << "Wallet looks good. " << std::endl;
-                orderBook.insertOrder(obe);
+                m_orderBook.insertOrder(obe);
             }
             else {
                 std::cout << "Wallet has insufficient funds . " << std::endl;
@@ -56,10 +56,10 @@ void MerkelMain::enterAsk(const OrderBookEntry& obe){
 
 void MerkelMain::enterBid(const OrderBookEntry& obe){
         try {
-            if (wallet.canFulfillOrder(obe))
+            if (m_wallet.canFulfillOrder(obe))
             {
                 std::cout << "Wallet looks good. " << std::endl;
-                orderBook.insertOrder(obe);
+                m_orderBook.insertOrder(obe);
             }
             else {
                 std::cout << "Wallet has insufficient funds . " << std::endl;
@@ -72,32 +72,32 @@ void MerkelMain::enterBid(const OrderBookEntry& obe){
 
 void MerkelMain::gotoNextTimeFrame(){
     std::cout << "Going to next time frame. " << std::endl;
-    for (std::string p : orderBook.getKnownProducts())
+    for (std::string p : m_orderBook.getKnownProducts())
     {
         std::cout << "matching " << p << std::endl;
-        std::vector<OrderBookEntry> sales =  orderBook.matchAsksToBids(p, currentTime);
+        std::vector<OrderBookEntry> sales =  m_orderBook.matchAsksToBids(p, m_currentTime);
         std::cout << "Sales: " << sales.size() << std::endl;
         for (OrderBookEntry& sale : sales)
         {
-            std::cout << "Sale price: " << sale.price << " amount " << sale.amount << std::endl;
-            if (sale.username == "simuser")
+            std::cout << "Sale price: " << sale.m_price << " amount " << sale.m_amount << std::endl;
+            if (sale.m_username == "simuser")
             {
                 // update the wallet
-                wallet.processSale(sale);
-                clInterpreter.saleCompleted(sale);
+                m_wallet.processSale(sale);
+                m_clInterpreter.saleCompleted(sale);
             }
-            if (sale.username == "bot")
+            if (sale.m_username == "bot")
             {
                 // update the wallet
-                wallet.processSale(sale);
-                bot.saleCompleted(sale);
+                m_wallet.processSale(sale);
+                m_bot.saleCompleted(sale);
             }
         }
 
     }
-    wallet.clearReserves();
-    orderBook.removeCustomOrders();
-    currentTime = orderBook.getNextTime(currentTime);
+    m_wallet.clearReserves();
+    m_orderBook.removeCustomOrders();
+    m_currentTime = m_orderBook.getNextTime(m_currentTime);
 }
 
 void MerkelMain::enterAsk_EventHandler(const OrderBookEntry& obe) {
@@ -113,5 +113,5 @@ void MerkelMain::gotoNextTimeFrame_EventHandler() {
 }
 
 void MerkelMain::quitRequest_EventHandler() {
-    keepRunning = false;
+    m_keepRunning = false;
 }

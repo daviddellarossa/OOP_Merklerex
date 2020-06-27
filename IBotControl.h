@@ -10,8 +10,6 @@
  */
 class IBotControl {
 public:
-    /** Start the processing of the current frame */
-    virtual void processFrame(const std::string& currentTime) = 0;
     /** Log the Wallet */
     virtual void logWallet() const = 0;
     /** Log the list of bids */
@@ -20,7 +18,6 @@ public:
     virtual void logAsks() const = 0;
     /** Log the list of sales */
     virtual void logSales() const = 0;
-
 };
 
 #endif //MERKLEREX_IBOTCONTROL_H
